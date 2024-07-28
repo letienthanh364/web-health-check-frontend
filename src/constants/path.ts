@@ -1,7 +1,8 @@
 const mainPath = {
   home: '/',
   login: '/login',
-  website: '/websites'
+  website: '/websites',
+  websiteDetail: '/websites/:id'
 }
 
 export default mainPath

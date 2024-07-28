@@ -1,4 +1,7 @@
 import React, { useState } from 'react'
+import checkerApi from '../../apis/checker.api'
+import { useMutation } from '@tanstack/react-query'
+import classNames from 'classnames'
 
 export default function HomePage() {
   const [url, setUrl] = useState('')
@@ -9,12 +12,15 @@ export default function HomePage() {
     checkHealth(url)
   }
 
+  const checkLinkMutation = useMutation({
+    mutationFn: checkerApi.checkLink
+  })
   const checkHealth = (url: string) => {
-    // Simulating an API call
-    setTimeout(() => {
-      const isHealthy = Math.random() > 0.5 // Random health status
-      setStatus(isHealthy ? 'The website is up and running!' : 'The website is down!')
-    }, 1000)
+    checkLinkMutation.mutate(url, {
+      onSuccess: (res) => {
+        setStatus(res.data.status)
+      }
+    })
   }
 
   return (
@@ -44,9 +50,11 @@ export default function HomePage() {
               </button>
             </form>
             {status && (
-              <div className='mt-6 p-4 bg-darkblue-700 rounded'>
-                <h2 className='text-xl font-bold mb-2 text-white'>Health Check Result</h2>
-                <p className='text-white'>{status}</p>
+              <div className='mt-6 p-4 bg-darkblue-700 rounded font-bold'>
+                <h2 className='text-xl mb-2 text-white'>Health Check Result</h2>
+                <p className={classNames('uppercase', status == 'alive' ? 'text-green-600' : 'text-red-600')}>
+                  {status}
+                </p>
               </div>
             )}
           </div>

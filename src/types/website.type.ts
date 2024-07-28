@@ -26,6 +26,7 @@ export interface WebsiteUpdate {
 }
 
 export interface WebsiteContactModel {
+  id: number
   contact_address: string
   contact_method: string
 }

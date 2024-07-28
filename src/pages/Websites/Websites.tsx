@@ -1,5 +1,33 @@
-import React from 'react'
+import { websiteQuery } from '../../hooks/queries/useWebsiteQuery'
+import WebsiteCard from './WebsiteCard'
 
 export default function Websites() {
-  return <div>Websites</div>
+  const { data: websitesData } = websiteQuery.useListWebsites({})
+  const websites = websitesData?.data.data || []
+
+  return (
+    <div className='container'>
+      <div className='flex items-center py-20 justify-center '>
+        <div className='bg-darkblue-800 p-8 rounded-lg shadow-md '>
+          <h1 className='text-2xl font-bold mb-6 text-center text-white'>Website List</h1>
+          <div className='min-w-full bg-darkblue-700 text-white'>
+            <div>
+              <div className='w-full grid py-4 grid-cols-8 border-b border-darkblue-600'>
+                <p className=' col-span-2 px-4 '>Name</p>
+                <p className=' col-span-2 px-4'>Path</p>
+                <p className=' col-span-1 px-4'>Limit</p>
+                <p className=' col-span-1 px-4'>Retry</p>
+                <p className=' col-span-2 px-4'>Default Email</p>
+              </div>
+            </div>
+            <div className='w-full'>
+              {websites.map((website) => (
+                <WebsiteCard key={website.id} website={website} />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 }

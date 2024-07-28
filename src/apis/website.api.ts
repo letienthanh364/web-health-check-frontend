@@ -14,7 +14,7 @@ const websiteApi = {
   getWebsite(id: number) {
     return http.get<SuccessRespone<WebsiteModel>>(`${url}/${id}`)
   },
-  updateWebsite(id: number, body: WebsiteUpdate) {
+  updateWebsite({ id, body }: { id: number; body: WebsiteUpdate }) {
     return http.patch<SuccessRespone<WebsiteModel>>(`${url}/${id}`, body)
   },
   deleteWebsite(id: number) {
@@ -28,7 +28,7 @@ export const websiteContactApi = {
   listContactForWebsite(id: number) {
     return http.get<SuccessRespone<WebsiteContactModel[]>>(`${contactUrl}/${id}`)
   },
-  addContactForWebsite(id: number, body: WebsiteContactModel) {
+  addContactForWebsite({ id, body }: { id: string; body: { contact_address: string; contact_method: string } }) {
     return http.post<SuccessRespone<Number | String>>(`${contactUrl}/${id}`, body)
   }
 }
