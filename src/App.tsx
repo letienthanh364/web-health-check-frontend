@@ -1,10 +1,27 @@
 import './App.css'
+import { AppProvider } from './contexts/app.context'
 import useRouteElements from './hooks/useRouteElements'
 
-function App() {
-  const routeElements = useRouteElements()
+function AppIner() {
+  const routes = useRouteElements()
 
-  return <div className=''>{routeElements}</div>
+  return (
+    <div
+      style={{
+        minHeight: 'inherit'
+      }}
+    >
+      {routes}
+    </div>
+  )
+}
+
+function App() {
+  return (
+    <AppProvider>
+      <AppIner />
+    </AppProvider>
+  )
 }
 
 export default App
