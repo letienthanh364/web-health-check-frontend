@@ -3,7 +3,7 @@ import { SQLModel } from '../utils/sql.type'
 export interface WebsiteModel extends SQLModel {
   name: string
   path: string
-  limit: number
+  time_interval: number
   retry: number
   default_email: string
   status: string
@@ -12,7 +12,7 @@ export interface WebsiteModel extends SQLModel {
 export interface WebsiteCreate {
   name: string
   path: string
-  limit: number
+  time_interval: number
   retry: number
   default_email: string
 }
@@ -20,7 +20,7 @@ export interface WebsiteCreate {
 export interface WebsiteUpdate {
   name?: string
   path?: string
-  limit?: number
+  time_interval?: number
   retry?: number
   default_email?: string
 }

@@ -10,7 +10,7 @@ interface Props {
 export default function WebsiteCard({ website }: Props) {
   const navigate = useNavigate()
   const handleClick = () => {
-    navigate({ pathname: `${mainPath.website}/${generateNameId({ name: website.name, id: website.id })}` })
+    navigate({ pathname: `${mainPath.website}/${generateNameId({ name: '', id: website.id })}` })
   }
 
   return (
@@ -20,7 +20,7 @@ export default function WebsiteCard({ website }: Props) {
     >
       <p className=' col-span-2 px-4 '>{website.name}</p>
       <p className=' col-span-2 px-4 '>{website.path}</p>
-      <p className=' col-span-1 px-4 '>{website.limit}</p>
+      <p className=' col-span-1 px-4 '>{website.time_interval}</p>
       <p className=' col-span-1 px-4 '>{website.retry}</p>
       <p className=' col-span-2 px-4 '>{website.default_email}</p>
     </button>

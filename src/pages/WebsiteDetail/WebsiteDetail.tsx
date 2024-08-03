@@ -26,7 +26,14 @@ export default function WebsiteDetail() {
   const [newContact, setNewContact] = useState({ contact_address: '', contact_method: '' })
   const addContactMutation = websiteQuery.mutation.useAddContactForWebsite()
   const handleAddContact = () => {
-    addContactMutation.mutate({ id: websiteId, body: newContact })
+    addContactMutation.mutate(
+      { id: websiteId, body: newContact },
+      {
+        onSuccess: () => {
+          setNewContact({ contact_address: '', contact_method: '' })
+        }
+      }
+    )
   }
 
   if (!website) {
@@ -39,7 +46,7 @@ export default function WebsiteDetail() {
         <h1 className='text-2xl font-bold mb-6 text-center text-white'>{website.name}</h1>
         <div className='text-white font-semibold space-y-4'>
           <p>Path: {website.path}</p>
-          <p>Limit: {website.limit}</p>
+          <p>Time interval: {website.time_interval}</p>
           <p>Retry: {website.retry}</p>
           <p>Default Email: {website.default_email}</p>
         </div>

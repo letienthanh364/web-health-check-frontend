@@ -1,10 +1,10 @@
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { NavLink } from 'react-router-dom'
 import mainPath from '../../constants/path'
 import { AppContext } from '../../contexts/app.context'
 
 export default function MainHeader() {
-  const { isAuthenticated } = useContext(AppContext)
+  const { isAuthenticated, handleLogout } = useContext(AppContext)
 
   return (
     <div className='w-full px-10 bg-darkblue-900 '>
@@ -14,10 +14,28 @@ export default function MainHeader() {
             Web Health Check
           </NavLink>
 
-          <div className='flex items-center space-x-4 hover:text-primaryColor uppercase font-medium text-lg'>
-            {isAuthenticated && <NavLink to={mainPath.website}>Websites</NavLink>}
+          <div className='flex items-center font-medium text-lg'>
+            {isAuthenticated && (
+              <div className='flex items-center space-x-6'>
+                <NavLink className='hover:text-primaryColor uppercase' to={mainPath.website}>
+                  Websites
+                </NavLink>
+                <button
+                  onClick={() => {
+                    handleLogout()
+                  }}
+                  className='hover:text-primaryColor uppercase'
+                >
+                  Logout
+                </button>
+              </div>
+            )}
 
-            {!isAuthenticated && <NavLink to={mainPath.login}>Login</NavLink>}
+            {!isAuthenticated && (
+              <NavLink className='hover:text-primaryColor uppercase' to={mainPath.login}>
+                Login
+              </NavLink>
+            )}
           </div>
         </div>
       </div>
