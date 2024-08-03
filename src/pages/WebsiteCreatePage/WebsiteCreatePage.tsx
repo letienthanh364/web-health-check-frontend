@@ -36,7 +36,9 @@ export default function WebsiteCreatePage() {
       onSettled() {},
       onSuccess(res) {
         reset()
-        navigate({ pathname: `${mainPath.website}/${generateNameId({ name: '', id: res.data.data.toString() })}` })
+        navigate({
+          pathname: `${mainPath.website}/${generateNameId({ name: data.name, id: res.data.data.toString() })}`
+        })
       },
       onError(err) {
         console.error(err)
@@ -50,9 +52,7 @@ export default function WebsiteCreatePage() {
         <h1 className='text-2xl font-bold mb-6 text-center text-white'>Create New Website</h1>
         <form onSubmit={handleSubmit(onSubmit, onInvalid)} className='flex flex-col space-y-4'>
           <div>
-            <label htmlFor='name' className='block text-white font-semibold mb-2'>
-              Name
-            </label>
+            <p className='block text-white font-semibold mb-2'>Name</p>
             <input
               type='text'
               id='name'
@@ -62,9 +62,7 @@ export default function WebsiteCreatePage() {
             />
           </div>
           <div>
-            <label htmlFor='path' className='block text-white font-semibold mb-2'>
-              Path
-            </label>
+            <p className='block text-white font-semibold mb-2'>Path</p>
             <input
               type='text'
               id='path'
@@ -74,9 +72,7 @@ export default function WebsiteCreatePage() {
             />
           </div>
           <div>
-            <label htmlFor='emails' className='block text-white font-semibold mb-2'>
-              Emails
-            </label>
+            <p className='block text-white font-semibold mb-2'>Emails</p>
             <input
               id='default_email'
               className='p-2 bg-darkblue-600 border border-darkblue-500 rounded w-full text-white'
@@ -85,9 +81,7 @@ export default function WebsiteCreatePage() {
             />
           </div>
           <div>
-            <label htmlFor='timeInterval' className='block text-white font-semibold mb-2'>
-              Time Interval (in seconds)
-            </label>
+            <p className='block text-white font-semibold mb-2'>Time Interval (in seconds)</p>
             <input
               type='number'
               id='time_interval'
@@ -97,9 +91,7 @@ export default function WebsiteCreatePage() {
             />
           </div>
           <div>
-            <label htmlFor='retry' className='block text-white font-semibold mb-2'>
-              Retry
-            </label>
+            <p className='block text-white font-semibold mb-2'>Retry</p>
             <input
               type='number'
               id='retry'

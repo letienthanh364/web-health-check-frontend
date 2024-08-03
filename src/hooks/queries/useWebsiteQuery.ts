@@ -9,14 +9,14 @@ const useListWebsites = (queryConfig: {}) => {
   })
 }
 
-const useGetWebsiteDetai = (id: number) => {
+const useGetWebsiteDetai = (id: string) => {
   return useQuery({
     queryKey: ['websites', id],
     queryFn: () => websiteApi.getWebsite(id)
   })
 }
 
-const useListContactsForWebsite = (id: number) => {
+const useListContactsForWebsite = (id: string) => {
   return useQuery({
     queryKey: ['websites', 'contacts', id],
     queryFn: () => websiteContactApi.listContactForWebsite(id)
@@ -34,13 +34,13 @@ const useAddWebsite = () => {
   })
 }
 
-const useUpdateWebsite = () => {
+const useUpdateWebsite = (id: string) => {
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: websiteApi.updateWebsite,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['websites'] })
+      queryClient.invalidateQueries({ queryKey: ['websites', id] })
     }
   })
 }

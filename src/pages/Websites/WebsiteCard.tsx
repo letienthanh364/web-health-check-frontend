@@ -10,7 +10,7 @@ interface Props {
 export default function WebsiteCard({ website }: Props) {
   const navigate = useNavigate()
   const handleClick = () => {
-    navigate({ pathname: `${mainPath.website}/${generateNameId({ name: '', id: website.id })}` })
+    navigate({ pathname: `${mainPath.website}/${generateNameId({ name: website.name, id: website.id })}` })
   }
 
   return (

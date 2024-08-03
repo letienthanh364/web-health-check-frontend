@@ -11,13 +11,13 @@ const websiteApi = {
   listWebsite(params: {}) {
     return http.get<SuccessRespone<WebsiteModel[]>>(url, { params })
   },
-  getWebsite(id: number) {
+  getWebsite(id: string) {
     return http.get<SuccessRespone<WebsiteModel>>(`${url}/${id}`)
   },
-  updateWebsite({ id, body }: { id: number; body: WebsiteUpdate }) {
+  updateWebsite({ id, body }: { id: string; body: WebsiteUpdate }) {
     return http.patch<SuccessRespone<WebsiteModel>>(`${url}/${id}`, body)
   },
-  deleteWebsite(id: number) {
+  deleteWebsite(id: string) {
     return http.delete<SuccessRespone<WebsiteModel>>(`${url}/${id}`)
   }
 }
@@ -25,7 +25,7 @@ export default websiteApi
 
 const contactUrl = '/website/contact'
 export const websiteContactApi = {
-  listContactForWebsite(id: number) {
+  listContactForWebsite(id: string) {
     return http.get<SuccessRespone<WebsiteContactModel[]>>(`${contactUrl}/${id}`)
   },
   addContactForWebsite({ id, body }: { id: string; body: { contact_address: string; contact_method: string } }) {

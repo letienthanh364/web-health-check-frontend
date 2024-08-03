@@ -1,17 +1,20 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { websiteQuery } from '../../hooks/queries/useWebsiteQuery'
 import { getIdFromNameId } from '../../utils/utils'
 import { useParams } from 'react-router-dom'
 import classNames from 'classnames'
+import { FormProvider, useForm } from 'react-hook-form'
+import { WebsiteUpdate } from '../../types/website.type'
+import WebsiteUpdateForm from './WebsiteUpdateForm'
 
 export default function WebsiteDetail() {
   const { id } = useParams()
   const websiteId = getIdFromNameId(id as string)
 
-  const { data: websiteData } = websiteQuery.useGetWebsiteDetai(Number(websiteId))
+  const { data: websiteData } = websiteQuery.useGetWebsiteDetai(websiteId)
   const website = websiteData?.data.data
 
-  const { data: contactsData } = websiteQuery.useListContactsForWebsite(Number(websiteId))
+  const { data: contactsData } = websiteQuery.useListContactsForWebsite(websiteId)
   const contactList = contactsData?.data.data || []
 
   const [isManagingContacts, setIsManagingContacts] = useState(false)
@@ -36,10 +39,48 @@ export default function WebsiteDetail() {
     )
   }
 
+  //! Use update website form
+  const [updating, setUpdating] = useState(false)
+  const methods = useForm<WebsiteUpdate>({
+    defaultValues: {
+      name: website?.name || '',
+      path: website?.path || '',
+      default_email: website?.default_email || '',
+      time_interval: website?.time_interval || 84400,
+      retry: website?.retry || 0
+    }
+  })
+  const { handleSubmit, reset, setValue } = methods
+  useEffect(() => {
+    if (website) {
+      setValue('name', website.name)
+      setValue('path', website.path)
+      setValue('default_email', website.default_email)
+      setValue('time_interval', website.time_interval)
+      setValue('retry', website.retry)
+    }
+  })
+
+  //! Update website
+  const createWebsiteMutation = websiteQuery.mutation.useUpdateWebsite(websiteId)
+  const onSubmit = handleSubmit(async (data) => {
+    createWebsiteMutation.mutate(
+      { id: websiteId, body: data },
+      {
+        onSuccess() {
+          setUpdating(false)
+          reset()
+        },
+        onError(err) {
+          console.error(err)
+        }
+      }
+    )
+  })
+
   if (!website) {
     return <div>Website not found</div>
   }
-
   return (
     <div className='flex items-center justify-center py-10'>
       <div className='bg-darkblue-800 p-8 rounded-lg shadow-md w-11/12 max-w-4xl'>
@@ -51,9 +92,23 @@ export default function WebsiteDetail() {
           <p>Default Email: {website.default_email}</p>
         </div>
         <div className='mt-6'>
-          <button className='bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 mr-2'>Edit</button>
           <button
-            onClick={() => setIsManagingContacts(!isManagingContacts)}
+            onClick={() => {
+              setUpdating(!updating)
+              setIsManagingContacts(false)
+            }}
+            className={classNames(' text-white py-2 px-4 rounded  mr-2', {
+              'bg-blue-500 hover:bg-blue-600': !updating,
+              'bg-red-500 hover:bg-red-600': updating
+            })}
+          >
+            {updating ? 'Cancel' : 'Edit'}
+          </button>
+          <button
+            onClick={() => {
+              setIsManagingContacts(!isManagingContacts)
+              setUpdating(false)
+            }}
             className={classNames(' text-white py-2 px-4 rounded', {
               'bg-green-500 hover:bg-green-600': !isManagingContacts,
               'bg-red-500 hover:bg-red-600': isManagingContacts
@@ -62,6 +117,15 @@ export default function WebsiteDetail() {
             {isManagingContacts ? 'Cancel' : 'Contact Manage'}
           </button>
         </div>
+
+        {updating && (
+          <FormProvider {...methods}>
+            <form onSubmit={onSubmit}>
+              <WebsiteUpdateForm />
+            </form>
+          </FormProvider>
+        )}
+
         <div className='mt-6'>
           <h2 className='text-xl font-bold mb-4 text-white'>Contacts</h2>
           {contactList.map((contact, index) => (
