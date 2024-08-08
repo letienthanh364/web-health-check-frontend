@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import websiteApi, { websiteContactApi } from '../../apis/website.api'
-import contactApi from '../../apis/contact.api'
+import websiteApi, { websiteChecktimeApi, websiteContactApi } from '../../apis/website.api'
 
 const useListWebsites = (queryConfig: {}) => {
   return useQuery({
@@ -18,8 +17,14 @@ const useGetWebsiteDetai = (id: string) => {
 
 const useListContactsForWebsite = (id: string) => {
   return useQuery({
-    queryKey: ['websites', 'contacts', id],
+    queryKey: ['websites', id, 'contacts'],
     queryFn: () => websiteContactApi.listContactForWebsite(id)
+  })
+}
+const useListChecktimesForWebsite = (id: string) => {
+  return useQuery({
+    queryKey: ['websites', id, 'check-times'],
+    queryFn: () => websiteChecktimeApi.listChecktimeForWebsite(id)
   })
 }
 
@@ -56,24 +61,48 @@ const useDeleteWebsite = () => {
   })
 }
 
-const useAddContactForWebsite = () => {
+//! Website contact queries
+const useAddContactForWebsite = (id: string) => {
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: websiteContactApi.addContactForWebsite,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['websites', 'contacts'] })
+      queryClient.invalidateQueries({ queryKey: ['websites', id, 'contacts'] })
     }
   })
 }
 
-const useDeleteContactForWebsite = () => {
+const useDeleteContactForWebsite = (id: string) => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: contactApi.deleteContact,
+    mutationFn: websiteContactApi.removeContactForWebsite,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['websites', 'contacts'] })
+      queryClient.invalidateQueries({ queryKey: ['websites', id, 'contacts'] })
+    }
+  })
+}
+
+//! Website check-time queries
+const useAddChecktimeForWebsite = (id: string) => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: websiteChecktimeApi.addChecktimeForWebsite,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['websites', id, 'check-times'] })
+    }
+  })
+}
+
+const useDeleteChecktimeForWebsite = (id: string) => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: websiteChecktimeApi.removeChecktimeForWebsite,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['websites', id, 'check-times'] })
     }
   })
 }
@@ -82,11 +111,14 @@ export const websiteQuery = {
   useListWebsites,
   useGetWebsiteDetai,
   useListContactsForWebsite,
+  useListChecktimesForWebsite,
   mutation: {
     useAddWebsite,
     useUpdateWebsite,
     useDeleteWebsite,
     useAddContactForWebsite,
-    useDeleteContactForWebsite
+    useDeleteContactForWebsite,
+    useAddChecktimeForWebsite,
+    useDeleteChecktimeForWebsite
   }
 }

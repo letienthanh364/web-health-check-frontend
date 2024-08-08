@@ -30,3 +30,9 @@ export interface WebsiteContactModel {
   contact_address: string
   contact_method: string
 }
+
+export interface WebsiteChecktimeModel {
+  id: number
+  website_id: number
+  check_time: string
+}

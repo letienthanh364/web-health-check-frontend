@@ -1,5 +1,6 @@
 import axios, { AxiosError } from 'axios'
 import HttpStatusCode from '../constants/httpStatusCode.enum'
+import parser from 'cron-parser'
 
 export function isAxiosError<T>(error: unknown): error is AxiosError<T> {
   // eslint-disable-next-line import/no-named-as-default-member
@@ -40,4 +41,17 @@ export const showSuccessDialog = (setIsOpen: React.Dispatch<React.SetStateAction
 
 export function truncateString(str: string, n: number) {
   return str.length > n ? str.slice(0, n - 1) + '&hellip;' : str
+}
+
+export const parseCronToTime = (cronString: string): string => {
+  try {
+    const interval = parser.parseExpression(cronString)
+    const nextDate = interval.next().toDate()
+    const hours = nextDate.getHours().toString().padStart(2, '0')
+    const minutes = nextDate.getMinutes().toString().padStart(2, '0')
+    return `${hours}:${minutes} every day`
+  } catch (err) {
+    console.error('Invalid cron string', err)
+    return 'Invalid cron string'
+  }
 }

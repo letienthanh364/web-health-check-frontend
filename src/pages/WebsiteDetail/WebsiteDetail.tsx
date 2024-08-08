@@ -6,6 +6,8 @@ import classNames from 'classnames'
 import { FormProvider, useForm } from 'react-hook-form'
 import { WebsiteUpdate } from '../../types/website.type'
 import WebsiteUpdateForm from './WebsiteUpdateForm'
+import WebsiteContactList from './WebsiteContactList'
+import WebsiteChecktimeList from './WebsiteChecktimeList'
 
 export default function WebsiteDetail() {
   const { id } = useParams()
@@ -14,30 +16,8 @@ export default function WebsiteDetail() {
   const { data: websiteData } = websiteQuery.useGetWebsiteDetai(websiteId)
   const website = websiteData?.data.data
 
-  const { data: contactsData } = websiteQuery.useListContactsForWebsite(websiteId)
-  const contactList = contactsData?.data.data || []
-
   const [isManagingContacts, setIsManagingContacts] = useState(false)
-
-  //! Delete contact
-  const deleteContactMutation = websiteQuery.mutation.useDeleteContactForWebsite()
-  const handleRemoveContact = (id: number) => {
-    deleteContactMutation.mutate(String(id))
-  }
-
-  //! Add contact
-  const [newContact, setNewContact] = useState({ contact_address: '', contact_method: '' })
-  const addContactMutation = websiteQuery.mutation.useAddContactForWebsite()
-  const handleAddContact = () => {
-    addContactMutation.mutate(
-      { id: websiteId, body: newContact },
-      {
-        onSuccess: () => {
-          setNewContact({ contact_address: '', contact_method: '' })
-        }
-      }
-    )
-  }
+  const [isManagingChecktimes, setIsManagingChecktimes] = useState(false)
 
   //! Use update website form
   const [updating, setUpdating] = useState(false)
@@ -91,7 +71,7 @@ export default function WebsiteDetail() {
           <p>Retry: {website.retry}</p>
           <p>Default Email: {website.default_email}</p>
         </div>
-        <div className='mt-6'>
+        <div className='mt-6 space-x-2'>
           <button
             onClick={() => {
               setUpdating(!updating)
@@ -107,6 +87,7 @@ export default function WebsiteDetail() {
           <button
             onClick={() => {
               setIsManagingContacts(!isManagingContacts)
+              setIsManagingChecktimes(false)
               setUpdating(false)
             }}
             className={classNames(' text-white py-2 px-4 rounded', {
@@ -115,6 +96,20 @@ export default function WebsiteDetail() {
             })}
           >
             {isManagingContacts ? 'Cancel' : 'Contact Manage'}
+          </button>
+
+          <button
+            onClick={() => {
+              setIsManagingChecktimes(!isManagingChecktimes)
+              setIsManagingContacts(false)
+              setUpdating(false)
+            }}
+            className={classNames(' text-white py-2 px-4 rounded', {
+              'bg-green-500 hover:bg-green-600': !isManagingChecktimes,
+              'bg-red-500 hover:bg-red-600': isManagingChecktimes
+            })}
+          >
+            {isManagingChecktimes ? 'Cancel' : 'Check-time Manage'}
           </button>
         </div>
 
@@ -126,71 +121,8 @@ export default function WebsiteDetail() {
           </FormProvider>
         )}
 
-        <div className='mt-6'>
-          <h2 className='text-xl font-bold mb-4 text-white'>Contacts</h2>
-          {contactList.map((contact, index) => (
-            <div key={index} className='bg-darkblue-700 p-4 mb-4 rounded'>
-              <div className='grid grid-cols-6 gap-6 items-center'>
-                <div className='col-span-3 overflow-hidden'>
-                  <strong className=''>Address: </strong>
-                  <p className='line-clamp-1 '>{contact.contact_address}</p>
-                </div>
-                <div className='col-span-2 overflow-hidden'>
-                  <strong className=''>Method: </strong>
-                  <p className='capitalize'></p>
-                  {contact.contact_method}
-                </div>
-                {isManagingContacts && (
-                  <button
-                    onClick={() => handleRemoveContact(contact.id)}
-                    className='bg-red-500 col-span-1 text-white py-2 px-4 rounded hover:bg-red-600 ml-4'
-                  >
-                    Remove
-                  </button>
-                )}
-              </div>
-            </div>
-          ))}
-          {isManagingContacts && (
-            <div className='mt-6'>
-              <h3 className='text-lg font-bold mb-2 text-white'>Add New Contact</h3>
-              <div className='bg-darkblue-700 p-4 rounded mb-4'>
-                <div className='flex justify-between space-x-8 items-center'>
-                  <div className=' space-y-4 w-3/4'>
-                    <p className='text-white'>
-                      <strong>Address:</strong>
-                    </p>
-                    <input
-                      type='text'
-                      value={newContact.contact_address}
-                      onChange={(e) => setNewContact({ ...newContact, contact_address: e.target.value })}
-                      className='p-2 bg-darkblue-600 border border-darkblue-500 rounded w-full text-white'
-                    />
-                  </div>
-                  <div className=' space-y-4 w-1/4'>
-                    <p className='text-white'>
-                      <strong>Method:</strong>
-                    </p>
-                    <input
-                      type='text'
-                      value={newContact.contact_method}
-                      onChange={(e) => setNewContact({ ...newContact, contact_method: e.target.value })}
-                      className='p-2 bg-darkblue-600 border border-darkblue-500 rounded w-full text-white'
-                    />
-                  </div>
-                </div>
-                <div className='flex justify-end mt-4'>
-                  <button
-                    onClick={handleAddContact}
-                    className='bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600'
-                  >
-                    Add Contact
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
+        <WebsiteContactList websiteId={websiteId} isManagingContacts={isManagingContacts} />
+        <WebsiteChecktimeList websiteId={websiteId} isManagingChecktimes={isManagingChecktimes} />
       </div>
     </div>
   )

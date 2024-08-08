@@ -87,7 +87,7 @@ export default function WebsiteCreatePage() {
               id='time_interval'
               className='p-2 bg-darkblue-600 border border-darkblue-500 rounded w-full text-white'
               required
-              {...register('time_interval')}
+              {...register('time_interval', { valueAsNumber: true })}
             />
           </div>
           <div>
@@ -97,7 +97,7 @@ export default function WebsiteCreatePage() {
               id='retry'
               className='p-2 bg-darkblue-600 border border-darkblue-500 rounded w-full text-white'
               required
-              {...register('retry')}
+              {...register('retry', { valueAsNumber: true })}
             />
           </div>
 
