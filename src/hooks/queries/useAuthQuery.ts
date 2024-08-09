@@ -7,16 +7,9 @@ const useLogin = () => {
   })
 }
 
-const useGetProfile = () => {
-  return useMutation({
-    mutationFn: authApi.getProfile
-  })
-}
-
 const authQuery = {
   mutation: {
-    useLogin,
-    useGetProfile
+    useLogin
   }
 }
 
