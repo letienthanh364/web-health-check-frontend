@@ -5,7 +5,9 @@ import HttpStatusCode from '../constants/httpStatusCode.enum'
 import { HttpErrorKeys } from '../constants/httpResponeErrorKey'
 import { ErrorRespone } from '../types/common.type'
 
-export const ApiURL = 'http://localhost:8080/v1/'
+// const ApiURL = process.env.REACT_APP_BACKEND_URL
+
+export const ApiURL = 'http://localhost:8080/v1'
 
 class Http {
   instance: AxiosInstance
