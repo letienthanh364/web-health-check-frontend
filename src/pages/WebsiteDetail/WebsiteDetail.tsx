@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react'
 import { websiteQuery } from '../../hooks/queries/useWebsiteQuery'
 import { getIdFromNameId } from '../../utils/utils'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import classNames from 'classnames'
 import { FormProvider, useForm } from 'react-hook-form'
 import { WebsiteUpdate } from '../../types/website.type'
 import WebsiteUpdateForm from './WebsiteUpdateForm'
 import WebsiteContactList from './WebsiteContactList'
 import WebsiteChecktimeList from './WebsiteChecktimeList'
+import mainPath from '../../constants/path'
 
 export default function WebsiteDetail() {
   const { id } = useParams()
@@ -57,6 +58,20 @@ export default function WebsiteDetail() {
       }
     )
   })
+
+  //! Delete website
+  const navigate = useNavigate()
+  const deleteWebMutation = websiteQuery.mutation.useDeleteWebsite()
+  const handleDelete = () => {
+    deleteWebMutation.mutate(websiteId, {
+      onSuccess() {
+        navigate(mainPath.website)
+      },
+      onError(err) {
+        console.error(err)
+      }
+    })
+  }
 
   if (!website) {
     return <div>Website not found</div>
@@ -123,6 +138,12 @@ export default function WebsiteDetail() {
 
         <WebsiteContactList websiteId={websiteId} isManagingContacts={isManagingContacts} />
         <WebsiteChecktimeList websiteId={websiteId} isManagingChecktimes={isManagingChecktimes} />
+
+        <div className='w-full flex justify-end'>
+          <button onClick={handleDelete} className='bg-red-500 hover:bg-red-600 font-medium rounded-xl py-1 px-4'>
+            Delete
+          </button>
+        </div>
       </div>
     </div>
   )
