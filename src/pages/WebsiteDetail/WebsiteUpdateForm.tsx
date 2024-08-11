@@ -56,12 +56,14 @@ export default function WebsiteUpdateForm() {
         />
       </div>
 
-      <button
-        type='submit'
-        className='bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition-colors disabled:opacity-40 disabled:hover:bg-green-500 disabled:cursor-not-allowed'
-      >
-        Update Website
-      </button>
+      <div className='flex justify-end items-center'>
+        <button
+          type='submit'
+          className='bg-green-500 text-white py-2 px-6 rounded-xl hover:bg-green-600 transition-colors disabled:opacity-40 disabled:hover:bg-green-500 disabled:cursor-not-allowed'
+        >
+          Save
+        </button>
+      </div>
     </div>
   )
 }

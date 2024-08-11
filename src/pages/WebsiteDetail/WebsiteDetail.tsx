@@ -17,9 +17,6 @@ export default function WebsiteDetail() {
   const { data: websiteData } = websiteQuery.useGetWebsiteDetai(websiteId)
   const website = websiteData?.data.data
 
-  const [isManagingContacts, setIsManagingContacts] = useState(false)
-  const [isManagingChecktimes, setIsManagingChecktimes] = useState(false)
-
   //! Use update website form
   const [updating, setUpdating] = useState(false)
   const methods = useForm<WebsiteUpdate>({
@@ -90,7 +87,6 @@ export default function WebsiteDetail() {
           <button
             onClick={() => {
               setUpdating(!updating)
-              setIsManagingContacts(false)
             }}
             className={classNames(' text-white py-2 px-4 rounded  mr-2', {
               'bg-blue-500 hover:bg-blue-600': !updating,
@@ -98,33 +94,6 @@ export default function WebsiteDetail() {
             })}
           >
             {updating ? 'Cancel' : 'Edit'}
-          </button>
-          <button
-            onClick={() => {
-              setIsManagingContacts(!isManagingContacts)
-              setIsManagingChecktimes(false)
-              setUpdating(false)
-            }}
-            className={classNames(' text-white py-2 px-4 rounded', {
-              'bg-green-500 hover:bg-green-600': !isManagingContacts,
-              'bg-red-500 hover:bg-red-600': isManagingContacts
-            })}
-          >
-            {isManagingContacts ? 'Cancel' : 'Contact Manage'}
-          </button>
-
-          <button
-            onClick={() => {
-              setIsManagingChecktimes(!isManagingChecktimes)
-              setIsManagingContacts(false)
-              setUpdating(false)
-            }}
-            className={classNames(' text-white py-2 px-4 rounded', {
-              'bg-green-500 hover:bg-green-600': !isManagingChecktimes,
-              'bg-red-500 hover:bg-red-600': isManagingChecktimes
-            })}
-          >
-            {isManagingChecktimes ? 'Cancel' : 'Check-time Manage'}
           </button>
         </div>
 
@@ -136,8 +105,8 @@ export default function WebsiteDetail() {
           </FormProvider>
         )}
 
-        <WebsiteContactList websiteId={websiteId} isManagingContacts={isManagingContacts} />
-        <WebsiteChecktimeList websiteId={websiteId} isManagingChecktimes={isManagingChecktimes} />
+        <WebsiteContactList websiteId={websiteId} isUpdating={updating} />
+        <WebsiteChecktimeList websiteId={websiteId} isUpdating={updating} />
 
         <div className='w-full flex justify-end'>
           <button onClick={handleDelete} className='bg-red-500 hover:bg-red-600 font-medium rounded-xl py-1 px-4'>

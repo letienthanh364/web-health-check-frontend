@@ -5,12 +5,12 @@ import classNames from 'classnames'
 
 interface Props {
   websiteId: string
-  isManagingContacts: boolean
+  isUpdating: boolean
 }
 
 const contactMethods = ['email', 'discord']
 
-export default function WebsiteContactList({ websiteId, isManagingContacts }: Props) {
+export default function WebsiteContactList({ websiteId, isUpdating }: Props) {
   const { data: contactsData } = websiteQuery.useListContactsForWebsite(websiteId)
   const contactList = contactsData?.data.data || []
   const [newContact, setNewContact] = useState({ contact_address: '', contact_method: '' })
@@ -46,17 +46,17 @@ export default function WebsiteContactList({ websiteId, isManagingContacts }: Pr
           <div className='grid grid-cols-6 gap-6 items-center'>
             <div className='col-span-3 overflow-hidden'>
               <strong className=''>Address: </strong>
-              <p className='line-clamp-1 '>{contact.contact_address}</p>
+              <p className='line-clamp-1 '>{contact.address}</p>
             </div>
             <div className='col-span-2 overflow-hidden'>
               <strong className=''>Method: </strong>
               <p className='capitalize'></p>
               {contact.contact_method}
             </div>
-            {isManagingContacts && (
+            {isUpdating && (
               <button
                 onClick={() => handleRemoveContact(contact.id)}
-                className='bg-red-500 col-span-1 text-white py-2 px-4 rounded hover:bg-red-600 ml-4'
+                className='bg-red-500 col-span-1 text-white py-1 text-sm px-2 rounded-xl hover:bg-red-600'
               >
                 Remove
               </button>
@@ -64,7 +64,7 @@ export default function WebsiteContactList({ websiteId, isManagingContacts }: Pr
           </div>
         </div>
       ))}
-      {isManagingContacts && (
+      {isUpdating && (
         <div className='mt-6'>
           <h3 className='text-lg font-bold mb-2 text-white'>Add New Contact</h3>
           <div className='bg-darkblue-700 p-4 rounded mb-4'>

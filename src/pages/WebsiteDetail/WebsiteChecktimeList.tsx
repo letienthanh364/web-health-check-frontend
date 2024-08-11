@@ -6,10 +6,10 @@ import classNames from 'classnames'
 
 interface Props {
   websiteId: string
-  isManagingChecktimes: boolean
+  isUpdating: boolean
 }
 
-export default function WebsiteChecktimeList({ websiteId, isManagingChecktimes }: Props) {
+export default function WebsiteChecktimeList({ websiteId, isUpdating }: Props) {
   const { data: checktimesData } = websiteQuery.useListChecktimesForWebsite(websiteId)
   const checktimeList = checktimesData?.data.data || []
 
@@ -63,10 +63,10 @@ export default function WebsiteChecktimeList({ websiteId, isManagingChecktimes }
               <p className='capitalize'></p>
               {parseCronToTime(checktime.check_time)}
             </div>
-            {isManagingChecktimes && (
+            {isUpdating && (
               <button
                 onClick={() => handleRemoveChecktime(checktime.id)}
-                className='bg-red-500 col-span-1 text-white py-2 px-4 rounded hover:bg-red-600 ml-4'
+                className='bg-red-500 col-span-1 text-white py-1 text-sm px-2 rounded-xl hover:bg-red-600'
               >
                 Remove
               </button>
@@ -74,7 +74,7 @@ export default function WebsiteChecktimeList({ websiteId, isManagingChecktimes }
           </div>
         </div>
       ))}
-      {isManagingChecktimes && (
+      {isUpdating && (
         <div className='mt-6'>
           <h3 className='text-lg font-bold mb-2 text-white'>Add New Checktime</h3>
           <div className='bg-darkblue-700 p-4 rounded mb-4'>
@@ -152,8 +152,9 @@ export default function WebsiteChecktimeList({ websiteId, isManagingChecktimes }
             </div>
             <div className='flex justify-end mt-4'>
               <button
+                disabled={hour == 0 || minute == 0}
                 onClick={handleAddChecktime}
-                className='bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600'
+                className='bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 disabled:opacity-40 disabled:hover:bg-green-500'
               >
                 Add Checktime
               </button>
