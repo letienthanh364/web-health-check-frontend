@@ -4,10 +4,10 @@ export interface CustomImage {
 }
 
 export interface ErrorRespone {
-  message: string
-  error_key: string
   status_code: number
+  message: string
   log: string
+  error_key: string
 }
 
 export interface SuccessRespone<Data> {

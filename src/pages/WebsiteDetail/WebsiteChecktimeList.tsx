@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { websiteQuery } from '../../hooks/queries/useWebsiteQuery'
-import { parseCronToTime } from '../../utils/utils'
+import { handleErrorResponse, parseCronToTime } from '../../utils/utils'
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react'
 import classNames from 'classnames'
+import ErrorDialog from '../../components/ErrorDialog'
 
 interface Props {
   websiteId: string
@@ -16,6 +17,8 @@ export default function WebsiteChecktimeList({ websiteId, isUpdating }: Props) {
   const [newChecktime, setNewChecktime] = useState('* * * * *')
   const [hour, setHour] = useState(0)
   const [minute, setMinute] = useState(0)
+  const [errorDialog, setErrorDialog] = useState(false)
+  const [errMessage, setErrMessage] = useState('')
 
   const handleSelectHour = (index: number) => {
     setHour(index)
@@ -34,9 +37,15 @@ export default function WebsiteChecktimeList({ websiteId, isUpdating }: Props) {
       { id: websiteId, body: { check_time: newChecktime } },
       {
         onSuccess: () => {
+          setErrorDialog(false)
+          setErrMessage('')
           setNewChecktime(`* * * * *`)
           setHour(0)
           setMinute(0)
+        },
+        onError(err) {
+          setErrorDialog(true)
+          handleErrorResponse(err, setErrMessage)
         }
       }
     )
@@ -152,7 +161,7 @@ export default function WebsiteChecktimeList({ websiteId, isUpdating }: Props) {
             </div>
             <div className='flex justify-end mt-4'>
               <button
-                disabled={hour == 0 || minute == 0}
+                disabled={newChecktime == '* * * * *'}
                 onClick={handleAddChecktime}
                 className='bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 disabled:opacity-40 disabled:hover:bg-green-500'
               >
@@ -162,6 +171,7 @@ export default function WebsiteChecktimeList({ websiteId, isUpdating }: Props) {
           </div>
         </div>
       )}
+      <ErrorDialog isOpen={errorDialog} handleClose={() => setErrorDialog(false)} message={errMessage} />
     </div>
   )
 }

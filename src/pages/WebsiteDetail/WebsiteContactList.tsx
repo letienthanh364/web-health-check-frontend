@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { websiteQuery } from '../../hooks/queries/useWebsiteQuery'
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react'
 import classNames from 'classnames'
+import { handleErrorResponse } from '../../utils/utils'
+import ErrorDialog from '../../components/ErrorDialog'
 
 interface Props {
   websiteId: string
@@ -13,7 +15,10 @@ const contactMethods = ['email', 'discord']
 export default function WebsiteContactList({ websiteId, isUpdating }: Props) {
   const { data: contactsData } = websiteQuery.useListContactsForWebsite(websiteId)
   const contactList = contactsData?.data.data || []
-  const [newContact, setNewContact] = useState({ contact_address: '', contact_method: '' })
+  const [newContact, setNewContact] = useState({ address: '', contact_method: '' })
+
+  const [errorDialog, setErrorDialog] = useState(false)
+  const [errMessage, setErrMessage] = useState('')
 
   const handleSelectMethod = (method: string) => {
     setNewContact({ ...newContact, contact_method: method })
@@ -25,8 +30,14 @@ export default function WebsiteContactList({ websiteId, isUpdating }: Props) {
     addContactMutation.mutate(
       { id: websiteId, body: newContact },
       {
-        onSuccess: () => {
-          setNewContact({ contact_address: '', contact_method: '' })
+        onSuccess() {
+          setErrorDialog(false)
+          setErrMessage('')
+          setNewContact({ address: '', contact_method: '' })
+        },
+        onError(err) {
+          setErrorDialog(true)
+          handleErrorResponse(err, setErrMessage)
         }
       }
     )
@@ -75,8 +86,8 @@ export default function WebsiteContactList({ websiteId, isUpdating }: Props) {
                 </p>
                 <input
                   type='text'
-                  value={newContact.contact_address}
-                  onChange={(e) => setNewContact({ ...newContact, contact_address: e.target.value })}
+                  value={newContact.address}
+                  onChange={(e) => setNewContact({ ...newContact, address: e.target.value })}
                   className='p-2 bg-darkblue-600 border border-darkblue-500 rounded w-full text-white min-h-10'
                 />
               </div>
@@ -116,7 +127,7 @@ export default function WebsiteContactList({ websiteId, isUpdating }: Props) {
             </div>
             <div className='flex justify-end mt-12'>
               <button
-                disabled={newContact.contact_address == '' || newContact.contact_method == ''}
+                disabled={newContact.address == '' || newContact.contact_method == ''}
                 onClick={handleAddContact}
                 className='bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 disabled:opacity-40 disabled:hover:bg-green-500'
               >
@@ -126,6 +137,8 @@ export default function WebsiteContactList({ websiteId, isUpdating }: Props) {
           </div>
         </div>
       )}
+
+      <ErrorDialog isOpen={errorDialog} handleClose={() => setErrorDialog(false)} message={errMessage} />
     </div>
   )
 }

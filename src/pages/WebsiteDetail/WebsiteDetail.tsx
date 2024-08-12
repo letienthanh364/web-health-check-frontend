@@ -9,6 +9,7 @@ import WebsiteUpdateForm from './WebsiteUpdateForm'
 import WebsiteContactList from './WebsiteContactList'
 import WebsiteChecktimeList from './WebsiteChecktimeList'
 import mainPath from '../../constants/path'
+import DialogPopup from '../../components/DialogPopup'
 
 export default function WebsiteDetail() {
   const { id } = useParams()
@@ -59,7 +60,10 @@ export default function WebsiteDetail() {
   //! Delete website
   const navigate = useNavigate()
   const deleteWebMutation = websiteQuery.mutation.useDeleteWebsite()
+  const [deleteDialog, setDeleteDialog] = useState(false)
+
   const handleDelete = () => {
+    setDeleteDialog(false)
     deleteWebMutation.mutate(websiteId, {
       onSuccess() {
         navigate(mainPath.website)
@@ -109,11 +113,21 @@ export default function WebsiteDetail() {
         <WebsiteChecktimeList websiteId={websiteId} isUpdating={updating} />
 
         <div className='w-full flex justify-end'>
-          <button onClick={handleDelete} className='bg-red-500 hover:bg-red-600 font-medium rounded-xl py-1 px-4'>
+          <button
+            onClick={() => setDeleteDialog(true)}
+            className='bg-red-500 hover:bg-red-600 font-medium rounded-xl py-1 px-4'
+          >
             Delete
           </button>
         </div>
       </div>
+
+      <DialogPopup isOpen={deleteDialog} handleClose={() => setDeleteDialog(false)}>
+        <p className='font-medium text-lg text-red-600'>Are you sure to delete this website?</p>
+        <button onClick={handleDelete} className='py-2 mt-6 px-4 rounded-xl hover:bg-red-600 bg-red-500'>
+          Delete
+        </button>
+      </DialogPopup>
     </div>
   )
 }

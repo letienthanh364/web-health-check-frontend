@@ -1,6 +1,8 @@
 import axios, { AxiosError } from 'axios'
 import HttpStatusCode from '../constants/httpStatusCode.enum'
 import parser from 'cron-parser'
+import { ErrorRespone } from '../types/common.type'
+import { HttpStatusMessage } from '../constants/httpStatusMessage'
 
 export function isAxiosError<T>(error: unknown): error is AxiosError<T> {
   // eslint-disable-next-line import/no-named-as-default-member
@@ -53,5 +55,16 @@ export const parseCronToTime = (cronString: string): string => {
   } catch (err) {
     console.error('Invalid cron string', err)
     return 'Invalid cron string'
+  }
+}
+
+export const handleErrorResponse = (err: any, setErrMessage: React.Dispatch<React.SetStateAction<string>>) => {
+  if (isAxiosBadRequestError<ErrorRespone>(err)) {
+    const formError = err.response?.data
+    if (formError) {
+      const errorMessgae = HttpStatusMessage.get(formError.error_key)
+      setErrMessage(errorMessgae || 'Undefined Error')
+      return
+    }
   }
 }

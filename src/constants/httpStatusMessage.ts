@@ -11,5 +11,12 @@ export const HttpStatusMessage = new Map([
   ['ErrQuantityExceed', 'The quantity you are trying to add exceed our store'],
   ['ErrInvalidRequest', 'Invalid Request'],
   ['ERR_NETWORK', 'Network Error'],
-  ['ECONNABORTED', 'Connection Error']
+  ['ECONNABORTED', 'Connection Error'],
+
+  //   ! Website Errors
+  ['ErrPathExisted', 'The website path is already existed'],
+  ['ErrContactExisted', 'Contact is already existed'],
+  ['ErrContactExceedLimit', 'Contact number is exceeding the limit'],
+  ['ErrCheckTimeExisted', 'Check time is already existed'],
+  ['ErrCheckTimeExceedLimit', 'Check time number is exceeding the limit']
 ])

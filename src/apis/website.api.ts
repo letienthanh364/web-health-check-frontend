@@ -34,7 +34,7 @@ export const websiteContactApi = {
   listContactForWebsite(id: string) {
     return http.get<SuccessRespone<WebsiteContactModel[]>>(`${contactUrl}/${id}`)
   },
-  addContactForWebsite({ id, body }: { id: string; body: { contact_address: string; contact_method: string } }) {
+  addContactForWebsite({ id, body }: { id: string; body: { address: string; contact_method: string } }) {
     return http.post<SuccessRespone<number | string>>(`${contactUrl}/${id}`, body)
   },
   removeContactForWebsite({ id, body }: { id: string; body: { id: number } }) {
