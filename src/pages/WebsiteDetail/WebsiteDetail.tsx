@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react'
 import { websiteQuery } from '../../hooks/queries/useWebsiteQuery'
-import { getIdFromNameId } from '../../utils/utils'
-import { useNavigate, useParams } from 'react-router-dom'
+import { getIdFromNameId, handleErrorResponse } from '../../utils/utils'
+import { useParams } from 'react-router-dom'
 import classNames from 'classnames'
 import { FormProvider, useForm } from 'react-hook-form'
 import { WebsiteUpdate } from '../../types/website.type'
 import WebsiteUpdateForm from './WebsiteUpdateForm'
 import WebsiteContactList from './WebsiteContactList'
 import WebsiteChecktimeList from './WebsiteChecktimeList'
-import mainPath from '../../constants/path'
 import DialogPopup from '../../components/DialogPopup'
+import ErrorDialog from '../../components/ErrorDialog'
 
 export default function WebsiteDetail() {
   const { id } = useParams()
@@ -20,6 +20,9 @@ export default function WebsiteDetail() {
 
   //! Use update website form
   const [updating, setUpdating] = useState(false)
+  const [errorDialog, setErrorDialog] = useState(false)
+  const [errMessage, setErrMessage] = useState('')
+
   const methods = useForm<WebsiteUpdate>({
     defaultValues: {
       name: website?.name || '',
@@ -51,23 +54,20 @@ export default function WebsiteDetail() {
           reset()
         },
         onError(err) {
-          console.error(err)
+          setErrorDialog(true)
+          handleErrorResponse(err, setErrMessage)
         }
       }
     )
   })
 
   //! Delete website
-  const navigate = useNavigate()
   const deleteWebMutation = websiteQuery.mutation.useDeleteWebsite()
   const [deleteDialog, setDeleteDialog] = useState(false)
 
   const handleDelete = () => {
     setDeleteDialog(false)
     deleteWebMutation.mutate(websiteId, {
-      onSuccess() {
-        navigate(mainPath.website)
-      },
       onError(err) {
         console.error(err)
       }
@@ -128,6 +128,8 @@ export default function WebsiteDetail() {
           Delete
         </button>
       </DialogPopup>
+
+      <ErrorDialog isOpen={errorDialog} handleClose={() => setErrorDialog(false)} message={errMessage} />
     </div>
   )
 }

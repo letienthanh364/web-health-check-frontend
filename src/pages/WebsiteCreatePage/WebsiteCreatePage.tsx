@@ -4,9 +4,14 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import websiteApi from '../../apis/website.api'
 import { useNavigate } from 'react-router-dom'
 import mainPath from '../../constants/path'
-import { generateNameId } from '../../utils/utils'
+import { generateNameId, handleErrorResponse } from '../../utils/utils'
+import ErrorDialog from '../../components/ErrorDialog'
+import { useState } from 'react'
 
 export default function WebsiteCreatePage() {
+  const [errorDialog, setErrorDialog] = useState(false)
+  const [errMessage, setErrMessage] = useState('')
+
   const { handleSubmit, reset, register, watch } = useForm<WebsiteCreate>({
     defaultValues: {
       name: '',
@@ -41,7 +46,8 @@ export default function WebsiteCreatePage() {
         })
       },
       onError(err) {
-        console.error(err)
+        setErrorDialog(true)
+        handleErrorResponse(err, setErrMessage)
       }
     })
   }
@@ -110,6 +116,7 @@ export default function WebsiteCreatePage() {
           </button>
         </form>
       </div>
+      <ErrorDialog isOpen={errorDialog} handleClose={() => setErrorDialog(false)} message={errMessage} />
     </div>
   )
 }

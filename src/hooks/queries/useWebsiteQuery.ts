@@ -1,5 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import websiteApi, { websiteChecktimeApi, websiteContactApi } from '../../apis/website.api'
+import { useNavigate } from 'react-router-dom'
+import mainPath from '../../constants/path'
 
 const useListWebsites = (queryConfig: {}) => {
   return useQuery({
@@ -52,10 +54,18 @@ const useUpdateWebsite = (id: string) => {
 
 const useDeleteWebsite = () => {
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
 
   return useMutation({
     mutationFn: websiteApi.deleteWebsite,
-    onSuccess: () => {
+    onSuccess: (_, websiteId) => {
+      // Optionally, remove queries related to the deleted website to avoid unnecessary API calls
+      queryClient.removeQueries({ queryKey: ['websites', websiteId] })
+      queryClient.removeQueries({ queryKey: ['websites', websiteId, 'contacts'] })
+      queryClient.removeQueries({ queryKey: ['websites', websiteId, 'check-times'] })
+      // First, navigate away from the current page
+      navigate(mainPath.website)
+      // Then, invalidate the queries to refetch the list of websites
       queryClient.invalidateQueries({ queryKey: ['websites'] })
     }
   })
