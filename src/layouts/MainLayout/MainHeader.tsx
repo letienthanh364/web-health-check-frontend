@@ -18,7 +18,7 @@ export default function MainHeader() {
             {isAuthenticated && (
               <div className='flex items-center space-x-6'>
                 <NavLink className='hover:text-primaryColor uppercase' to={mainPath.website}>
-                  Websites
+                  Websites Manage
                 </NavLink>
                 <button
                   onClick={() => {

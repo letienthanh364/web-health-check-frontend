@@ -14,6 +14,13 @@ export const HttpStatusMessage = new Map([
   ['ECONNABORTED', 'Connection Error'],
 
   //   ! Website Errors
+  ['ErrWebsiteIsDeleted', 'Website is deleted'],
+  ['ErrNameCannotBeEmpty', 'Website name cannot be empty'],
+  ['ErrPathCannotBeEmpty', 'Website path cannot be empty'],
+  ['ErrDefaultEmailCannotBeEmpty', 'Website default email cannot be empty'],
+  ['ErrTimeIntervalInvalid', 'The time interval is too small'],
+  ['ErrRetryInvalid', 'The number of retry is invalid'],
+
   ['ErrPathExisted', 'The website path is already existed'],
   ['ErrContactExisted', 'Contact is already existed'],
   ['ErrContactExceedLimit', 'Contact number is exceeding the limit'],
